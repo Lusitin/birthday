@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>姬晨牧 · 生日快乐</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #f8f9fa;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 背景星光 */
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration, 4s) infinite ease-in-out;
+      opacity: var(--opacity, 0.6);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: var(--opacity, 0.8); }
+    }
+
+    /* 新增：流星效果 */
+    .meteor {
+      position: absolute;
+      width: 2px;
+      height: 50px;
+      background: linear-gradient(45deg, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 70%,rgba(255,255,255,0) 100%);
+      animation: meteorFall var(--duration, 2s) ease-out infinite, flicker 0.3s infinite alternate;
+      transform: rotate(-45deg);
+    }
+
+    @keyframes meteorFall {
+      from { top: -50px; }
+      to { top: 100vh; }
+    }
+
+    @keyframes flicker {
+      to { opacity: 0.5; }
+    }
+
+    /* 新增：烟花效果 */
+    .firework {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 70%);
+      opacity: 0;
+      transform: scale(0);
+      animation: explode 1s forwards;
+    }
+
+    @keyframes explode {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* 首页样式 */
+    #homePage {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2rem;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    .birthday-text {
+      font-size: 4rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      background: linear-gradient(45deg, #ff9a9e, #a1c4fd, #84fab0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+      to { text-shadow: 0 0 25px rgba(255, 255, 255, 0.7), 0 0 40px rgba(161, 196, 253, 0.4); }
+    }
+
+    .cake-button {
+      background: linear-gradient(45deg, #ff9a9e, #a1c4fd);
+      border: none;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      font-size: 1.2rem;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      margin: 0 auto 1.5rem; /* 居中并增加底部间距 */
+    }
+
+    .cake-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 新增：提示语样式 */
+    .hint-text {
+      font-size: 1.2rem;
+      color: #a1c4fd;
+      margin-top: 1rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    /* 主页面样式 */
+    #mainPage {
+      position: relative;
+      z-index: 2;
+      width: 90%;
+      max-width: 800px;
+      background: rgba(15, 15, 35, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 2.5rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+                  0 0 0 1px rgba(255, 255, 255, 0.1);
+      transform: translateY(0);
+      opacity: 0;
+      animation: fadeInUp 1s ease-out forwards;
+      max-height: 80vh; /* 限制高度 */
+      overflow-y: auto; /* 允许垂直滚动 */
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(45deg, #ff9a9e, #a1c4fd, #84fab0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: glow 3s infinite alternate;
+    }
+
+    .highlight {
+      font-size: 3.5rem;
+      font-weight: 800;
+      display: block;
+      margin: 0.5rem 0;
+    }
+
+    .intro {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin: 1.5rem 0;
+      opacity: 0;
+      animation: slideIn 1s ease-out 0.5s forwards;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 轮播容器 */
+    .carousel {
+      margin: 2rem auto;
+      width: 100%;
+      max-width: 500px;
+      height: 300px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .carousel:hover {
+      transform: scale(1.02);
+    }
+
+    .slides {
+      display: flex;
+      width: 300%;
+      height: 100%;
+      transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .slide {
+      width: 100%;
+      flex-shrink: 0;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .slide:hover {
+      transform: scale(1.1);
+      filter: brightness(1.2) saturate(1.1);
+    }
+
+    /* 使用 Base64 内联图片占位（实际使用时替换为真实作品图） */
+    .slide:nth-child(1) { background-image: url('https://via.placeholder.com/500x300/4A00E0/FFFFFF?text=《三国演义》'); }
+    .slide:nth-child(2) { background-image: url('https://via.placeholder.com/500x300/8E2DE2/FFFFFF?text=《大宅门》'); }
+    .slide:nth-child(3) { background-image: url('https://via.placeholder.com/500x300/00C9FF/FFFFFF?text=《光阴里的故事》'); }
+
+    .wish {
+      font-size: 1.4rem;
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: slideIn 1s ease-out 1s forwards;
+    }
+
+    /* 音频控件美化 */
+    .audio-player {
+      margin-top: 1.5rem;
+      width: 100%;
+      max-width: 400px;
+      opacity: 0;
+      animation: slideIn 1s ease-out 1.3s forwards;
+    }
+
+    .audio-player audio {
+      width: 100%;
+      outline: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    /* 新增：祝福输入框样式 */
+    .message-container {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      animation: slideIn 1s ease-out 1.5s forwards;
+    }
+
+    .message-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 0.8rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+      margin-bottom: 1rem;
+    }
+
+    .message-input:focus {
+      border-color: #a1c4fd;
+    }
+
+    .submit-btn {
+      background: linear-gradient(45deg, #ff9a9e, #a1c4fd);
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1.5rem;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 隐藏/显示页面 */
+    .hidden {
+      display: none;
+    }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .birthday-text {
+        font-size: 3rem;
+      }
+      .cake-button {
+        width: 100px;
+        height: 100px;
+        font-size: 1rem;
+      }
+      .hint-text {
+        font-size: 1rem;
+      }
+      #mainPage { padding: 1.8rem; }
+      h1 { font-size: 2.2rem; }
+      .highlight { font-size: 2.6rem; }
+      .carousel { height: 220px; }
+      .intro, .wish { font-size: 1rem; }
+      .message-input {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 星空背景 -->
+  <div class="stars" id="stars"></div>
+
+  <!-- 首页 -->
+  <div id="homePage">
+    <div class="birthday-text">Happy Birthday!!!!</div>
+    <button class="cake-button" id="cakeButton">🎂</button>
+    <div class="hint-text">帅哥请点上方小蛋糕</div>
+  </div>
+
+  <!-- 主页面 -->
+  <div id="mainPage" class="hidden">
+    <h1>🎂 生日快乐！<span class="highlight">姬晨牧</span></h1>
+
+    <div class="intro">
+      <p>这里是祝福语</p>
+      <p>今天是您的生日，愿艺术之树常青，生活如诗如画，健康喜乐，万事顺遂！</p>
+    </div>
+
+    <!-- 图片轮播 -->
+    <div class="carousel">
+      <div class="slides" id="slides">
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+      </div>
+    </div>
+
+    <div class="wish">✨ 愿星辰为你引路，岁月赠你温柔 ✨</div>
+
+    <!-- 新增：祝福输入框 -->
+    <div class="message-container">
+      <h3 style="margin-bottom: 1rem; color: #a1c4fd;">点击此处对西梅留言：</h3>
+      <input type="text" class="message-input" id="messageInput" placeholder="西梅接收信号中...">
+      <button class="submit-btn" id="submitBtn">OK!</button>
+    </div>
+
+    <!-- 生日歌播放器 -->
+    <div class="audio-player">
+      <!-- 使用免费版权音乐：Happy Birthday by AudioLibrary -->
+      <audio controls>
+        <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5275c4e4d1.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  </div>
+
+  <script>
+    // 生成星空背景
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 150; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.width = `${Math.random() * 3}px`;
+      star.style.height = star.style.width;
+      star.style.setProperty('--duration', `${2 + Math.random() * 5}s`);
+      star.style.setProperty('--opacity', `${0.3 + Math.random() * 0.7}`);
+      starsContainer.appendChild(star);
+    }
+
+    // 随机生成流星
+    function createMeteor() {
+      const meteor = document.createElement('div');
+      meteor.classList.add('meteor');
+      meteor.style.left = `${Math.random() * 100}vw`;
+      meteor.style.top = `-50px`;
+      meteor.style.setProperty('--duration', `${1 + Math.random() * 2}s`);
+      starsContainer.appendChild(meteor);
+
+      setTimeout(() => meteor.remove(), 3000); // 自动移除流星
+    }
+
+    setInterval(createMeteor, 2000); // 每隔2秒生成一颗流星
+
+    // 随机生成烟花
+    function createFirework() {
+      const firework = document.createElement('div');
+      firework.classList.add('firework');
+      firework.style.left = `${Math.random() * 100}vw`;
+      firework.style.top = `${Math.random() * 100}vh`;
+      firework.style.width = `${10 + Math.random() * 30}px`;
+      firework.style.height = firework.style.width;
+      document.body.appendChild(firework);
+
+      setTimeout(() => firework.remove(), 1000); // 自动移除烟花
+    }
+
+    setInterval(createFirework, 3000); // 每隔3秒生成一次烟花
+
+    // 轮播图逻辑（自动切换）
+    const slides = document.getElementById('slides');
+    let currentIndex = 0;
+    const totalSlides = 3;
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % totalSlides;
+      slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+
+    // 每5秒自动切换
+    setInterval(nextSlide, 5000);
+
+    // 页面加载完成后轻微延迟启动动画（提升体验）
+    window.addEventListener('load', () => {
+      document.body.style.opacity = 1;
+    });
+
+    // 点击蛋糕按钮切换到主页面
+    document.getElementById('cakeButton').addEventListener('click', function() {
+      document.getElementById('homePage').classList.add('hidden');
+      document.getElementById('mainPage').classList.remove('hidden');
+    });
+
+    // 新增：处理用户输入和提交
+    document.getElementById('submitBtn').addEventListener('click', function() {
+      const message = document.getElementById('messageInput').value.trim();
+      if (message) {
+        // 发送到 webhook.site（请替换为你的 URL）
+        fetch('YOUR_WEBHOOK_URL', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: message,
+            timestamp: new Date().toLocaleString()
+          })
+        })
+        .then(response => {
+          console.log('祝福已发送！');
+          alert('祝福已发送！感谢你的参与！');
+          document.getElementById('messageInput').value = '';
+        })
+        .catch(error => {
+          console.error('发送失败:', error);
+          alert('发送失败，请稍后重试');
+        });
+      } else {
+        alert('请输入祝福语！');
+      }
+    });
+
+    // 支持回车键提交
+    document.getElementById('messageInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('submitBtn').click();
+      }
+    });
+  </script>
+</body>
+</html>
